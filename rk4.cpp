@@ -27,22 +27,20 @@ int main()
 
     for (int i = 0; i <= steps; i++)
     {
+        // Output the current values BEFORE updating
+        double y_exact = exact_solution(x0);                  // Exact solution
+        double error = abs(y0 - y_exact);                     // Absolute error
+
+        cout << setw(10) << i << setw(10) << x0 << setw(15) << y0 << setw(15) << y_exact << setw(15) << error << endl;
+
         // Runge-Kutta calculations
         double k1 = h * dydx(x0, y0);
         double k2 = h * dydx(x0 + h / 2, y0 + k1 / 2);
         double k3 = h * dydx(x0 + h / 2, y0 + k2 / 2);
         double k4 = h * dydx(x0 + h, y0 + k3);
 
-        double y_rk = y0 + (k1 + 2 * k2 + 2 * k3 + k4) / 6.0;  // RK-4 update
-        double y_exact = exact_solution(x0);                  // Exact solution
-        double error = abs(y_rk - y_exact);                   // Absolute error
-
-        // Output results
-        cout << setw(10) << i << setw(10) << x0 << setw(15) << y_rk << setw(15) << y_exact << setw(15) << error << endl;
-
-        // Update for the next step
-        y0 = y_rk;
-        x0 += h;
+        y0 = y0 + (k1 + 2 * k2 + 2 * k3 + k4) / 6.0;  // RK-4 update
+        x0 += h;                                     // Update x0 for the next step
     }
 
     return 0;
