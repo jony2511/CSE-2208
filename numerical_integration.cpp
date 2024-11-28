@@ -1,43 +1,93 @@
 #include <bits/stdc++.h>
 using namespace std;
-typedef long long ll;
 
-double trapezoidal (vector <double> y, double h) {
-    int n = y.size();
-    double integral = y[0] + y[n-1];
-    for(int i = 1; i < n - 1; i++){
-        integral += (2 * y[i]);
-    }
-    return integral * h / 2;
+// Example function f(x)
+double f(double x) {
+    return x * x * sin(x); // Replace this with your desired function
 }
 
-double simpsonsOneThird (vector <double> y, double h) {
-    int n = y.size();
-    double integral = y[0] + y[n-1];
-    for(int i = 1; i < n - 1; i++){
-        integral += (i % 2 == 0) ? 2 * y[i] : 4 * y[i];
+// Trapezoidal Rule
+double trapezoidalRule(double a, double b, int n) {
+    double h = (b - a) / n; // Step size
+    double integral = (f(a) + f(b)) / 2.0;
+
+    for (int i = 1; i < n; ++i) {
+        integral += f(a + i * h);
     }
-    return integral * h / 3;
+
+    return integral * h;
 }
 
-double simpsonsThreeEigth (vector <double> y, double h) {
-    int n = y.size();
-    double integral = y[0] + y[n-1];
-    for(int i = 1; i < n - 1; i++){
-        integral += (i % 3 == 0) ? 2 * y[i] : 3 * y[i];
+// Simpson's 1/3 Rule
+double simpsonsOneThirdRule(double a, double b, int n) {
+    if (n % 2 != 0) {
+        cout << "Simpson's 1/3 Rule requires an even number of intervals.\n";
+        return NAN;
     }
-    return integral * 3 * h / 8;
+
+    double h = (b - a) / n; // Step size
+    double integral = f(a) + f(b);
+
+    for (int i = 1; i < n; ++i) {
+        if (i % 2 == 0) {
+            integral += 2 * f(a + i * h);
+        } else {
+            integral += 4 * f(a + i * h);
+        }
+    }
+
+    return integral * h / 3.0;
 }
 
+// Simpson's 3/8 Rule
+double simpsonsThreeEighthRule(double a, double b, int n) {
+    if (n % 3 != 0) {
+        cout << "Simpson's 3/8 Rule requires the number of intervals to be a multiple of 3.\n";
+        return NAN;
+    }
+
+    double h = (b - a) / n; // Step size
+    double integral = f(a) + f(b);
+
+    for (int i = 1; i < n; ++i) {
+        if (i % 3 == 0) {
+            integral += 2 * f(a + i * h);
+        } else {
+            integral += 3 * f(a + i * h);
+        }
+    }
+
+    return integral * 3.0 * h / 8.0;
+}
 
 int main() {
-    vector <double> y = {1, 1.5, 2, 2.5, 3, 3.5, 4};
-    double a = 0, b = 3;
-    double h = (b - a) / y.size() - 1;
+    double a, b;
+    int n;
 
-    cout << "Trapezoidal : " << trapezoidal(y, h) << "\n";
-    cout << "SimpsonsOneThird : " << simpsonsOneThird(y, h) << "\n";
-    cout << "SimpsonsThreeEigth : " << simpsonsThreeEigth(y, h) << "\n";
+    // Input the interval and number of subintervals
+    cout << "Enter the lower limit of integration (a): ";
+    cin >> a;
+    cout << "Enter the upper limit of integration (b): ";
+    cin >> b;
+    cout << "Enter the number of subintervals (n): ";
+    cin >> n;
 
+    // Trapezoidal Rule
+    double trapezoidal = trapezoidalRule(a, b, n);
+    cout << fixed << setprecision(8);
+    cout << "Trapezoidal Rule Approximation: " << trapezoidal << endl;
+
+    // Simpson's 1/3 Rule
+    double simpsonsOneThird = simpsonsOneThirdRule(a, b, n);
+    if (!isnan(simpsonsOneThird)) {
+        cout << "Simpson's 1/3 Rule Approximation: " << simpsonsOneThird << endl;
+    }
+
+    // Simpson's 3/8 Rule
+    double simpsonsThreeEighth = simpsonsThreeEighthRule(a, b, n);
+    if (!isnan(simpsonsThreeEighth)) {
+        cout << "Simpson's 3/8 Rule Approximation: " << simpsonsThreeEighth << endl;
+    }
+
+    return 0;
 }
-
